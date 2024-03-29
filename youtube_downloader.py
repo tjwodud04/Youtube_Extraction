@@ -1,7 +1,8 @@
 import yt_dlp
 import os
 
-def download_and_convert_to_mp3(path, full_path, url):
+def download_and_convert_to_mp3(full_path, url):
+    # Set up options based on the ydl library document
     ydl_opts = {
         'format': 'worstaudio/worst', # 저품질 오디오 선택
         'postprocessors': [{ # MP3 변환 설정
@@ -15,16 +16,23 @@ def download_and_convert_to_mp3(path, full_path, url):
         ],
         'prefer_ffmpeg': True,
         'keepvideo': False, # 비디오 파일은 삭제
-        'outtmpl': path, # 출력 파일명 포맷
+        'outtmpl': "sound.mp3", # 출력 파일명 포맷
+        # 'outtmpl': '%(title)s.%(ext)s',
     }
 
+    # Remove the file for space usability
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         if os.path.exists(full_path):
             os.remove(full_path)
+
+        # Download the Youtube source
         ydl.download([url])
 
 if __name__ == '__main__':
-    url = input("Youtube URL : ")
-    path = "./result/"
-    full_path = ""
-    download_and_convert_to_mp3(path, full_path, path)
+    while True :
+        url = input("Youtube URL : ")
+        if url == 'stop' :
+            break
+        path = r"C:\Users\USER\Downloads\music"
+        full_path = ""
+        download_and_convert_to_mp3(full_path, url)
