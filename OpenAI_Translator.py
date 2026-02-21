@@ -134,13 +134,15 @@ if __name__ == "__main__":
                         help="Run the script without calling OpenAI to simulate output.")
     parser.add_argument("--api-key",
                         help="The OpenAI API key to use. If not specified, the OPENAI_API_KEY environment variable will be used.",
-                        default=os.environ.get("OPENAI_API_KEY", None))
+                        default=os.environ.get("OPENAI_API_KEY"))
     parser.add_argument("--client-type", help="The type of client to use. If not specified, defaults to 'api'.",
                         choices=["api", "manual"], default="api")
     args = parser.parse_args()
 
     # Set up client
     if args.client_type.lower() == "api":
+        if not args.api_key:
+            raise ValueError("OPENAI_API_KEY environment variable must be set or --api-key must be provided")
         client = ApiGptClient(args.api_key)
         thread = client.create_thread(thread_options=MemoryGptThreadOptions(max_message_window=5))
         thread.add_message(Message(role="system", content="You are a helpful assistant."))
